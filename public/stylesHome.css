@@ -1,0 +1,53 @@
+html{
+    --azul:#0000FF;
+    background-image: url(images/fondo.png);
+    height: 100vh;
+}
+
+body{
+    height: 80%;
+    display: flex;
+    flex-direction: row;
+}
+
+.materia{
+    border: 1px solid black;
+    font-size: large;
+    background-color: aliceblue;
+    user-select: none;
+    padding: 10px;
+    margin: 2px;
+}
+
+.bloqueada{
+    background-color: rgb(111, 117, 122);
+    color: white;
+}
+
+.desbloqueada{
+    background-color: aquamarine;
+    color:black;
+    cursor:pointer;
+}
+
+.habilitada {
+    background-color: yellow;
+    cursor: pointer;
+}
+
+.podriaCursar{
+    background-color: rgb(109, 109, 0);
+}
+
+.anio{
+    display: flex;
+    flex-direction: row;
+    margin-top: 10px;
+}
+
+.wrapper{
+    width: 100%;
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: center;
+}
