@@ -7,12 +7,21 @@ html{
 body{
     height: 80%;
     display: flex;
-    flex-direction: row;
+    flex-direction: row-reverse;
+}
+
+.helper >div{
+    box-sizing: content-box;
+    font-size: large;
+    text-align: center;
+    user-select: none;
+    padding: 10px;
+    margin: 2px;
 }
 
 .materia{
-    border: 1px solid black;
     font-size: large;
+    text-align: center;
     background-color: aliceblue;
     user-select: none;
     padding: 10px;
@@ -24,8 +33,14 @@ body{
     color: white;
 }
 
-.desbloqueada{
-    background-color: aquamarine;
+.aprobada{
+    background-color: rgb(51, 129, 41);
+    color:white;
+    cursor:pointer;
+}
+
+.cursada{
+    background-color: rgb(76, 252, 53);
     color:black;
     cursor:pointer;
 }
