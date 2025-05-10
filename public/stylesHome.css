@@ -23,6 +23,9 @@ body{
     padding: 10px;
     margin: 2px;
 }
+.wrapper{
+    flex: 1;
+}
 
 .materia{
     font-size: large;
