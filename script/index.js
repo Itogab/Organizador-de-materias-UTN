@@ -1,5 +1,6 @@
 const WRAPPER = document.getElementsByClassName('wrapper')[0];
 const divMateria = document.getElementsByClassName('materia');
+const contador = document.querySelector('.contador');
 
 class Materia{
   habilitada;
@@ -132,6 +133,7 @@ const correlativas = {
 };
 var materiasObjetos = [];
 
+
 function construirCorrelativas(pMateriasOBJETOS, pCorrelativas) {
   for (const nombreMateria in pCorrelativas) {
     const materiaOBJ = pMateriasOBJETOS.find(mat => mat.nombre === nombreMateria);
@@ -207,7 +209,12 @@ function reseteoVisual(){
     }
   })
 }
-
+function contar(){
+  contador.innerHTML = `${Alumno.materiasAprobadas.length} / ${cantidadDeMaterias}`
+  if (Alumno.materiasAprobadas.length === cantidadDeMaterias){
+    alert('Bien ahi wachin, te recibiste!')
+  }
+}
 
 function eliminarMateriaYDependientes(materia) {
   // Quitar la materia actual
@@ -236,6 +243,11 @@ construirCorrelativas(materiasObjetos,correlativas);
 Alumno.materiasPosibles; //Añade las materias posibles ni bien carga la pagina
 dibujarMaterias(WRAPPER,materias);
 
+
+const cantidadDeMaterias = materiasObjetos.length;
+contar();
+
+
 WRAPPER.addEventListener("click", (e) => {
   const materiaDIV = e.target;
   if (!materiaDIV.classList.contains("materia")) return;
@@ -247,12 +259,14 @@ WRAPPER.addEventListener("click", (e) => {
     eliminarMateriaYDependientes(materiaObjeto);
     Alumno.materiasPosibles;
     reseteoVisual();
+    contar();
   } else if (materiaDIV.classList.contains("habilitada")) {
     // Si esta habilitada, aprueba la cursada
     Alumno.aproboCursada = materiaObjeto;
   } else if (Alumno.materiasCursadas.includes(materiaObjeto)){
     //Si el alumno aprobo la materia, la marca como aprobada
     Alumno.aproboMateria = materiaObjeto;
+    contar();
   }else{
     // Si esta bloqueada no hace nada
     return;

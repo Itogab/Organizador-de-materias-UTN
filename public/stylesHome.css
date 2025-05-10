@@ -10,6 +10,11 @@ body{
     flex-direction: row-reverse;
 }
 
+.contador{
+    font-size:1.3em;
+    font-weight: 900;
+}
+
 .helper >div{
     box-sizing: content-box;
     font-size: large;
