@@ -276,7 +276,6 @@ WRAPPER.addEventListener("click", (e) => {
   // Resetea visualmente todos los divs
   reseteoVisual();
 });
-
 Array.from(divMateria).forEach((div => {
   div.addEventListener('mouseover', () => {
     if (!div.classList.contains('materia')) return;
@@ -284,34 +283,32 @@ Array.from(divMateria).forEach((div => {
     if (div.classList.contains('bloqueada')) return;
 
     const materiaActual = obtenerValorObjeto(div);
+    const arrayPodriaCursar = [];
 
-    for (const podriaCursar of materiasObjetos) {
-      // Si no es correlativa, sigue buscando
-      const esCorrelativa = podriaCursar.correlativas.some(array => array.includes(materiaActual));
+    for (const materia of materiasObjetos) {
+      const esCorrelativa = materia.correlativas.some(array => array.includes(materiaActual));
       if (!esCorrelativa) continue;
+      arrayPodriaCursar.push(materia);
+    }
 
-      const leFaltaAprobarUna = 
-        podriaCursar.correlativas[1].includes(materiaActual) && 
-        podriaCursar.correlativas[1]
-          .filter(materiad => materiad.nombre !== materiaActual.nombre)
-          .every(materia => Alumno.materiasAprobadas.includes(materia));
-      
-    
-      const leFaltaCursarUna = 
-        podriaCursar.correlativas[0].includes(materiaActual) && 
-        podriaCursar.correlativas[0]
-          .filter(materiad => materiad.nombre !== materiaActual.nombre)
-          .every(materia => Alumno.materiasCursadas.includes(materia));
-      
-      
-      
-      if ((leFaltaAprobarUna || leFaltaCursarUna)) {
+    for (const podriaCursar of arrayPodriaCursar) {
+      //Simula que pasaría si el alumno aprueba la materia o la cursada
+      const aprobadasSimuladas = [...Alumno.materiasAprobadas, materiaActual];
+      const cursadasSimuladas = [...Alumno.materiasCursadas, materiaActual];
+
+      //Chequea que si la aprueba, entonces todas las condiciones se cumplen
+      const todasAprobadas = podriaCursar.correlativas[1]
+        .every(mat => aprobadasSimuladas.includes(mat));
+      const todasCursadas = podriaCursar.correlativas[0]
+        .every(mat => cursadasSimuladas.includes(mat));
+
+      if (todasAprobadas && todasCursadas) {
         Array.from(divMateria).forEach(divMat => {
           if (
             divMat.innerHTML === podriaCursar.nombre &&
-            !divMat.classList.contains('habilitada') &&
             !divMat.classList.contains('cursada') &&
-            !divMat.classList.contains('aprobada')
+            !divMat.classList.contains('aprobada') &&
+            !divMat.classList.contains('habilitada')
           ) {
             divMat.classList.add('podriaCursar');
           }
@@ -320,7 +317,7 @@ Array.from(divMateria).forEach((div => {
     }
   });
 
-  // Limpia cuando el mouse sale
+  // Limpiar clases al salir
   div.addEventListener('mouseout', () => {
     Array.from(divMateria).forEach(divMat => {
       divMat.classList.remove('podriaCursar');
