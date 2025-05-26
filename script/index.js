@@ -246,7 +246,6 @@ function guardarCambios(){
     materiasCursadas:Alumno.materiasCursadas
   };
 
-  console.log(data)
   localStorage.setItem('estadoAlumno', JSON.stringify(data));
 };
 
@@ -260,21 +259,19 @@ function cargarCambios(){
     const materia = materiasObjetos.find(materia => materia.nombre === materiaData.nombre)
 
     if (materia){
-      console.log(materia)
       Alumno.aproboCursada = materia
     }
-  }
+  };
 
   for (const materiaData of data.materiasAprobadas){
     const materia = materiasObjetos.find(materia => materia.nombre === materiaData.nombre)
 
     if (materia){
-      console.log(materia)
       Alumno.aproboMateria = materia
     }
-  }
+  };
 
-  console.log(data)
+
 };
 
 
@@ -282,7 +279,6 @@ construirMaterias(materias);
 construirCorrelativas(materiasObjetos,correlativas);
 cargarCambios();
 
-console.log(Alumno)
 dibujarMaterias(WRAPPER,materias);
 reseteoVisual();
 
