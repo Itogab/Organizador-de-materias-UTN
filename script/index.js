@@ -238,16 +238,62 @@ function eliminarMateriaYDependientes(materia) {
   }
 }
 
+
+//Localstorage
+function guardarCambios(){
+  const data = {
+    materiasAprobadas:Alumno.materiasAprobadas,
+    materiasCursadas:Alumno.materiasCursadas
+  };
+
+  console.log(data)
+  localStorage.setItem('estadoAlumno', JSON.stringify(data));
+};
+
+function cargarCambios(){
+  const data = JSON.parse(localStorage.getItem('estadoAlumno'));
+  
+  //Si no hay data, no haga nada
+  if (!data) return;
+
+  for (const materiaData of data.materiasCursadas){
+    const materia = materiasObjetos.find(materia => materia.nombre === materiaData.nombre)
+
+    if (materia){
+      console.log(materia)
+      Alumno.aproboCursada = materia
+    }
+  }
+
+  for (const materiaData of data.materiasAprobadas){
+    const materia = materiasObjetos.find(materia => materia.nombre === materiaData.nombre)
+
+    if (materia){
+      console.log(materia)
+      Alumno.aproboMateria = materia
+    }
+  }
+
+  console.log(data)
+};
+
+
 construirMaterias(materias);
 construirCorrelativas(materiasObjetos,correlativas);
-Alumno.materiasPosibles; //Añade las materias posibles ni bien carga la pagina
+cargarCambios();
+
+console.log(Alumno)
 dibujarMaterias(WRAPPER,materias);
+reseteoVisual();
 
 
 const cantidadDeMaterias = materiasObjetos.length;
 contar();
 
 
+
+
+//Funcionalidades
 WRAPPER.addEventListener("click", (e) => {
   const materiaDIV = e.target;
   if (!materiaDIV.classList.contains("materia")) return;
@@ -275,6 +321,7 @@ WRAPPER.addEventListener("click", (e) => {
 
   // Resetea visualmente todos los divs
   reseteoVisual();
+  guardarCambios();
 });
 Array.from(divMateria).forEach((div => {
   div.addEventListener('mouseover', () => {
