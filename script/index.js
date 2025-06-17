@@ -2,8 +2,10 @@ const WRAPPER = document.getElementsByClassName('wrapper')[0];
 const divMateria = document.getElementsByClassName('materia');
 const contador = document.querySelector('.contador');
 
+//Declaracion Objetos y variables
+var materiasObjetos = [];
+
 class Materia{
-  habilitada;
   nombre;
   año;
   correlativas;
@@ -12,9 +14,7 @@ class Materia{
     this.nombre = nombre;
     this.año = año;
   }
-  habilitar(){
-    this.habilitada = true;
-  }
+
 
   get aprobada() {
     return this.correlativas[1].every(mat => mat.aprobada);
@@ -33,12 +33,16 @@ const Alumno = {
     if (!this.materiasAprobadas.includes(pMateria)) {
       this.materiasAprobadas.push(pMateria);
     }
+    
+    //Actualizar las materias posibles
     this.materiasPosibles;
   },
   set aproboCursada(pMateria){
     if (!this.materiasCursadas.includes(pMateria)) {
       this.materiasCursadas.push(pMateria);
     }
+
+    //Actualizar las materias posibles
     this.materiasPosibles;
   },
   get materiasPosibles() {
@@ -54,8 +58,8 @@ const Alumno = {
           posibles.push(materia)
           
         } 
-    }
     
+    }
     return posibles;
   }
   ,
@@ -66,6 +70,11 @@ const Alumno = {
   eliminarMateriaAprobada(pMateria){
     this.eliminarMateriaCursada(pMateria);
     this.materiasAprobadas = this.materiasAprobadas.filter(materia => materia !== pMateria);
+  },
+  reiniciarMaterias(){
+    this.materiasAprobadas = [];
+    this.materiasCursadas = [];
+     
   }
   }
 const materias = {
@@ -131,9 +140,9 @@ const correlativas = {
     'Sistemas de Gestión', 'Gestión Gerencial', 'Seguridad en los Sistemas de Información'],[]
   ]
 };
-var materiasObjetos = [];
 
 
+//Logica
 function construirCorrelativas(pMateriasOBJETOS, pCorrelativas) {
   for (const nombreMateria in pCorrelativas) {
     const materiaOBJ = pMateriasOBJETOS.find(mat => mat.nombre === nombreMateria);
@@ -209,6 +218,7 @@ function reseteoVisual(){
     }
   })
 }
+
 function contar(){
   contador.innerHTML = `${Alumno.materiasAprobadas.length} / ${cantidadDeMaterias}`
   if (Alumno.materiasAprobadas.length === cantidadDeMaterias){
@@ -274,7 +284,7 @@ function cargarCambios(){
 
 };
 
-
+//Inicializar
 construirMaterias(materias);
 construirCorrelativas(materiasObjetos,correlativas);
 cargarCambios();
@@ -319,11 +329,15 @@ WRAPPER.addEventListener("click", (e) => {
   reseteoVisual();
   guardarCambios();
 });
+
+WRAPPER.addEventListener("rightclick", () => {
+  console.log('Right clicked!')
+})
+
 Array.from(divMateria).forEach((div => {
   div.addEventListener('mouseover', () => {
     if (!div.classList.contains('materia')) return;
     if (div.classList.contains('aprobada')) return;
-    if (div.classList.contains('bloqueada')) return;
 
     const materiaActual = obtenerValorObjeto(div);
     const arrayPodriaCursar = [];
@@ -367,3 +381,12 @@ Array.from(divMateria).forEach((div => {
     });
   });
 }));
+
+document.addEventListener('keypress', (e) => {
+  if (e.key == 'r' || e.key == 'R'){
+    Alumno.reiniciarMaterias();
+    reseteoVisual();
+    contar();
+    guardarCambios();
+  }
+})
