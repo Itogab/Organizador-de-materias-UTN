@@ -225,16 +225,16 @@ function contar(){
   }
 }
 
-function eliminarMateriaYDependientes(materia) {
+function eliminarMateriaYDependientes(pMateria) {
   // Quitar la materia actual
-  Alumno.materiasAprobadas = Alumno.materiasAprobadas.filter(m => m !== materia);
-  Alumno.materiasCursadas = Alumno.materiasCursadas.filter(m => m !== materia);
+  Alumno.materiasAprobadas = Alumno.materiasAprobadas.filter(mat => mat !== pMateria);
+  Alumno.materiasCursadas = Alumno.materiasCursadas.filter(mat => mat !== pMateria);
 
   // Buscar materias que dependan de esta 
   for (const posible of materiasObjetos) {
     if (
-      posible.correlativas[0].includes(materia) ||
-      posible.correlativas[1].includes(materia)
+      posible.correlativas[0].includes(pMateria) ||
+      posible.correlativas[1].includes(pMateria)
     ) {
       // Si ya estaba aprobada o cursada, quitarla también
       if (
@@ -245,6 +245,23 @@ function eliminarMateriaYDependientes(materia) {
       }
     }
   }
+}
+
+const estaAprobada = (pMateria) => {
+  return Alumno.materiasAprobadas.includes(pMateria)
+}
+
+const estaCursada = (pMateria) => {
+  return Alumno.materiasCursadas.includes(pMateria)
+}
+const puedeCursar = (pMateria) => {
+  const nombreMateria = pMateria.nombre;
+
+  for (const div of Array.from(divMateria)) {
+    if (div.innerHTML === nombreMateria){
+      return (div.classList.contains('habilitada'))
+    }
+  } 
 }
 
 
@@ -303,20 +320,25 @@ WRAPPER.addEventListener("click", (e) => {
   if (!materiaDIV.classList.contains("materia")) return;
 
   const materiaObjeto = obtenerValorObjeto(materiaDIV);
+  
 
-  // Si esta aprobada, la desmarca
-  if (Alumno.materiasAprobadas.includes(materiaObjeto)) {
+
+  // Si esta aprobada, la desmarca  
+  if (estaAprobada(materiaObjeto)) {
     eliminarMateriaYDependientes(materiaObjeto);
     Alumno.materiasPosibles;
     reseteoVisual();
     contar();
-  } else if (materiaDIV.classList.contains("habilitada")) {
+
+  } else if (puedeCursar(materiaObjeto)) {
     // Si esta habilitada, aprueba la cursada
     Alumno.aproboCursada = materiaObjeto;
-  } else if (Alumno.materiasCursadas.includes(materiaObjeto)){
+
+  } else if (estaCursada(materiaObjeto)){
     //Si el alumno aprobo la materia, la marca como aprobada
     Alumno.aproboMateria = materiaObjeto;
     contar();
+
   }else{
     // Si esta bloqueada no hace nada
     return;
@@ -336,18 +358,13 @@ WRAPPER.addEventListener("contextmenu", (e) => {
   if (!materiaDIV.classList.contains("materia")) return;
   if (materiaDIV.classList.contains("bloqueada")) return;
   
-  const estaAprobada = Alumno.materiasAprobadas.includes(materiaObjeto);
-  const estaCursada = Alumno.materiasCursadas.includes(materiaObjeto);
 
-  if (estaAprobada){
-    Alumno.eliminarMateriaYDependientes(materiaObjeto);
+  if (estaAprobada(materiaObjeto)){
+    eliminarMateriaYDependientes(materiaObjeto);
     Alumno.materiasPosibles;
     reseteoVisual();
     contar();
-
-    console.log(Alumno.materiasCursadas);
-    console.log(Alumno.materiasAprobadas)
-  } else if (estaCursada){
+  } else if (estaCursada(materiaObjeto)){
     Alumno.eliminarMateriaCursada(materiaObjeto);
     Alumno.materiasPosibles;
     reseteoVisual();
@@ -361,8 +378,6 @@ Array.from(divMateria).forEach((div => {
     if (!div.classList.contains('materia')) return;
     if (div.classList.contains('aprobada')) return;
 
-    const puedeCursar = (div.classList.contains('habilitada'));
-    const puedeAprobar = (div.classList.contains('cursada'))
     const materiaActual = obtenerValorObjeto(div);
     const arrayPodriaCursar = [];
 
@@ -383,7 +398,7 @@ Array.from(divMateria).forEach((div => {
       &&
       podriaCursar.correlativas[0].every(mat => Alumno.materiasCursadas.includes(mat))
       &&
-      puedeAprobar
+      estaCursada(materiaActual)
       ;
       
       const test_LeFaltabaCursarla = 
@@ -391,7 +406,7 @@ Array.from(divMateria).forEach((div => {
       &&
       podriaCursar.correlativas[1].every(mat => Alumno.materiasAprobadas.includes(mat))
       &&
-      puedeCursar
+      puedeCursar(materiaActual)
       ;
 
       
