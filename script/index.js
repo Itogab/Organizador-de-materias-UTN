@@ -339,10 +339,13 @@ Array.from(divMateria).forEach((div => {
     if (!div.classList.contains('materia')) return;
     if (div.classList.contains('aprobada')) return;
 
+    const puedeCursar = (div.classList.contains('habilitada'));
+    const puedeAprobar = (div.classList.contains('cursada'))
     const materiaActual = obtenerValorObjeto(div);
     const arrayPodriaCursar = [];
 
     for (const materia of materiasObjetos) {
+      //Obtiene las correlativas de la materia a la que yo estoy apuntando
       const esCorrelativa = materia.correlativas.some(array => array.includes(materiaActual));
       if (!esCorrelativa) continue;
       arrayPodriaCursar.push(materia);
@@ -350,16 +353,28 @@ Array.from(divMateria).forEach((div => {
 
     for (const podriaCursar of arrayPodriaCursar) {
       //Simula que pasaría si el alumno aprueba la materia o la cursada
-      const aprobadasSimuladas = [...Alumno.materiasAprobadas, materiaActual];
-      const cursadasSimuladas = [...Alumno.materiasCursadas, materiaActual];
+      const aprobadasMasMateriactual = [...Alumno.materiasAprobadas, materiaActual];
+      const cursadasMasMateriactual = [...Alumno.materiasCursadas, materiaActual];
 
-      //Chequea que si la aprueba, entonces todas las condiciones se cumplen
-      const todasAprobadas = podriaCursar.correlativas[1]
-        .every(mat => aprobadasSimuladas.includes(mat));
-      const todasCursadas = podriaCursar.correlativas[0]
-        .every(mat => cursadasSimuladas.includes(mat));
+      const test_LeFaltabaAprobarla = 
+      podriaCursar.correlativas[1].every(mat => aprobadasMasMateriactual.includes(mat))
+      &&
+      podriaCursar.correlativas[0].every(mat => Alumno.materiasCursadas.includes(mat))
+      &&
+      puedeAprobar
+      ;
+      
+      const test_LeFaltabaCursarla = 
+      podriaCursar.correlativas[0].every(mat => cursadasMasMateriactual.includes(mat))
+      &&
+      podriaCursar.correlativas[1].every(mat => Alumno.materiasAprobadas.includes(mat))
+      &&
+      puedeCursar
+      ;
 
-      if (todasAprobadas && todasCursadas) {
+      
+      
+      if ((test_LeFaltabaCursarla) || (test_LeFaltabaAprobarla)) {
         Array.from(divMateria).forEach(divMat => {
           if (
             divMat.innerHTML === podriaCursar.nombre &&
