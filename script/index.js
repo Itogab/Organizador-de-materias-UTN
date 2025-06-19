@@ -352,6 +352,8 @@ WRAPPER.addEventListener("contextmenu", (e) => {
     Alumno.materiasPosibles;
     reseteoVisual();
   }
+
+  guardarCambios();
 })
 
 Array.from(divMateria).forEach((div => {
