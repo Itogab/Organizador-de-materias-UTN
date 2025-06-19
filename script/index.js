@@ -340,7 +340,7 @@ WRAPPER.addEventListener("contextmenu", (e) => {
   const estaCursada = Alumno.materiasCursadas.includes(materiaObjeto);
 
   if (estaAprobada){
-    Alumno.eliminarMateriaAprobada(materiaObjeto);
+    Alumno.eliminarMateriaYDependientes(materiaObjeto);
     Alumno.materiasPosibles;
     reseteoVisual();
     contar();
