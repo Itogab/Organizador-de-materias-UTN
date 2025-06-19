@@ -68,7 +68,6 @@ const Alumno = {
   }
   ,
   eliminarMateriaAprobada(pMateria){
-    this.eliminarMateriaCursada(pMateria);
     this.materiasAprobadas = this.materiasAprobadas.filter(materia => materia !== pMateria);
   },
   reiniciarMaterias(){
@@ -292,7 +291,6 @@ cargarCambios();
 dibujarMaterias(WRAPPER,materias);
 reseteoVisual();
 
-
 const cantidadDeMaterias = materiasObjetos.length;
 contar();
 
@@ -330,8 +328,30 @@ WRAPPER.addEventListener("click", (e) => {
   guardarCambios();
 });
 
-WRAPPER.addEventListener("rightclick", () => {
-  console.log('Right clicked!')
+WRAPPER.addEventListener("contextmenu", (e) => {
+  e.preventDefault();
+  const materiaDIV = e.target;
+  const materiaObjeto = obtenerValorObjeto(materiaDIV);
+
+  if (!materiaDIV.classList.contains("materia")) return;
+  if (materiaDIV.classList.contains("bloqueada")) return;
+  
+  const estaAprobada = Alumno.materiasAprobadas.includes(materiaObjeto);
+  const estaCursada = Alumno.materiasCursadas.includes(materiaObjeto);
+
+  if (estaAprobada){
+    Alumno.eliminarMateriaAprobada(materiaObjeto);
+    Alumno.materiasPosibles;
+    reseteoVisual();
+    contar();
+
+    console.log(Alumno.materiasCursadas);
+    console.log(Alumno.materiasAprobadas)
+  } else if (estaCursada){
+    Alumno.eliminarMateriaCursada(materiaObjeto);
+    Alumno.materiasPosibles;
+    reseteoVisual();
+  }
 })
 
 Array.from(divMateria).forEach((div => {
